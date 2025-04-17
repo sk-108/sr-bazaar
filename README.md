@@ -16,30 +16,30 @@ Srbazaar is a full-fledged **e-commerce web application** built using **Django**
 > Screenshots of the app in action:
 
 ### 🏠 Home Page
-![Home Page](screenshots/HomePage.png)
+![Home Page](assets/HomePage.png)
 
 ### 📄 Dashboard
-![Product Details](screenshots/Dashboard.png)
+![Product Details](assets/Dashboard.png)
 
 ### 🛒 Cart Page
-![Cart Page](screenshots/ProductInfoPage.png)
+![Cart Page](assets/ProductInfoPage.png)
 
 ### 💳 Checkout Page
-![Checkout](screenshots/orderPage.png)
+![Checkout](assets/orderPage.png)
 
 ### 🔐 Authentication
-![Login Page](screenshots/EmailVerification.png)
+![Login Page](assets/EmailVerification.png)
 
 
 ### 🔐 Category 
-![Login Page](screenshots/CategoryFilter.png)
+![Login Page](assets/CategoryFilter.png)
 
 
 ### 🔐 Profile Management 
-![Login Page](screenshots/ProfileManagement.png)
+![Login Page](assets/ProfileManagement.png)
 
 ### 🔐 Register 
-![Login Page](screenshots/Register.png)
+![Login Page](assets/Register.png)
 
 ## 🛠️ Tech Stack
 
