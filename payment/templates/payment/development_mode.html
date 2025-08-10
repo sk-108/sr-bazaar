@@ -1,0 +1,65 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-md-8 offset-md-2">
+            <div class="card">
+                <div class="card-header bg-warning">
+                    <h4>Payment System in Development Mode</h4>
+                </div>
+                <div class="card-body">
+                    <div class="alert alert-info">
+                        <h5>Payment processing is currently in development mode.</h5>
+                        <p>For testing purposes, you can use the following test card details:</p>
+                        <ul>
+                            <li><strong>Card Number:</strong> 4111 1111 1111 1111</li>
+                            <li><strong>Expiry Date:</strong> Any future date</li>
+                            <li><strong>CVV:</strong> Any 3 digits</li>
+                            <li><strong>Name:</strong> Any name</li>
+                        </ul>
+                    </div>
+                    <div id="razorpay-button-container" class="mt-4">
+                        <button id="rzp-button" class="btn btn-primary btn-lg btn-block">Pay with Razorpay (Test Mode)</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Razorpay Integration Script -->
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+<script>
+    document.getElementById('rzp-button').onclick = function(e) {
+        e.preventDefault();
+        
+        // Get the Razorpay order details from the template context
+        var options = {
+            "key": "{{ RAZORPAY_KEY_ID }}",
+            "amount": "{{ amount }}",
+            "currency": "{{ currency }}",
+            "name": "SR Bazaar",
+            "description": "Test Transaction",
+            "order_id": "{{ order_id }}",
+            "handler": function (response) {
+                // This function will be called after successful payment
+                alert('Payment successful! Payment ID: ' + response.razorpay_payment_id);
+                // Redirect to success page or handle success
+                window.location.href = "{% url 'payment-success' %}";
+            },
+            "prefill": {
+                "name": "Test User",
+                "email": "test@example.com",
+                "contact": "9999999999"
+            },
+            "theme": {
+                "color": "#3399cc"
+            }
+        };
+        
+        var rzp = new Razorpay(options);
+        rzp.open();
+    };
+</script>
+{% endblock %}

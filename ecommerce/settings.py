@@ -1,7 +1,9 @@
-
 import os
-
 from pathlib import Path
+from dotenv import load_dotenv
+
+# Load environment variables from .env file
+load_dotenv()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -11,14 +13,13 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-
-SECRET_KEY = os.environ.get('SECRET_KEY')
+SECRET_KEY = os.getenv('SECRET_KEY', 'django-insecure-4!x7v@r8z$1k2wq9b6p0s3t5u8y!z@e#r%g^j&l*m(o)p_q+r=s')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 
-DEBUG = False
+DEBUG = os.getenv('DEBUG', 'False') == 'True'
 
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', 'localhost,127.0.0.1').split(',')
 
 CSRF_TRUSTED_ORIGINS = ['http://srbazaar-env.eba-avpucxer.ap-south-1.elasticbeanstalk.com/']
 
@@ -139,19 +140,13 @@ USE_TZ = True
 
 
 # Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/4.1/howto/static-files/
-
-
 STATIC_URL = '/static/'
-
 STATICFILES_DIRS = [BASE_DIR / 'static']
+STATIC_ROOT = BASE_DIR / 'staticfiles'  # Add this line for collectstatic
 
-
+# Media files (Uploaded files)
 MEDIA_URL = '/media/'
-
-MEDIA_ROOT = BASE_DIR / 'static/media'
-
-
+MEDIA_ROOT = BASE_DIR / 'media'  # This is where uploaded files will be stored
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
@@ -159,76 +154,43 @@ MEDIA_ROOT = BASE_DIR / 'static/media'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 
-# Email configuration settings:
-
+# Email configuration settings
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_PORT = '587'
-EMAIL_USE_TLS = 'True'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER', '')  # Your Gmail address
+EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD', '')  # Your Gmail app password
+DEFAULT_FROM_EMAIL = os.environ.get('DEFAULT_FROM_EMAIL', 'webmaster@localhost')
 
-# Be sure to read the guide in the resources folder of this lecture (SETUP THE EMAIL BACKEND)
+# For development - print emails to console instead of sending
+if DEBUG:
+    EMAIL_BACKEND = 'django.core.mail.console.EmailBackend'
+    # Uncomment below to use file-based email backend for development
+    # EMAIL_BACKEND = 'django.core.mail.backends.filebased.EmailBackend'
+    # EMAIL_FILE_PATH = os.path.join(BASE_DIR, 'sent_emails')
 
-EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER') # - Enter your GMAIL address # The host email that sends password reset emails
-EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD') # - Enter your GMAIL password # The password of the host email that sends password reset emails
+# Razorpay API Configuration
+RAZORPAY_KEY_ID = os.getenv('RAZORPAY_KEY_ID')
+RAZORPAY_KEY_SECRET = os.getenv('RAZORPAY_KEY_SECRET')
+RAZORPAY_WEBHOOK_SECRET = os.getenv('RAZORPAY_WEBHOOK_SECRET', '')
 
+# Payment settings
+ENABLE_PAYMENTS = os.getenv('ENABLE_PAYMENTS', 'False') == 'True'  # Default to False if not set
+PAYMENT_CURRENCY = os.getenv('PAYMENT_CURRENCY', 'INR')  # Default currency for payments
 
+# Webhook settings (for production)
+# Email Configuration
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = os.getenv('EMAIL_HOST', 'smtp.gmail.com')
+EMAIL_PORT = int(os.getenv('EMAIL_PORT', 587))
+EMAIL_USE_TLS = os.getenv('EMAIL_USE_TLS', 'True') == 'True'
+EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER', '')
+EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD', '')
 
-
-# AWS configuration
-
-
-AWS_ACCESS_KEY_ID = os.environ.get('AWS_ACCESS_KEY_ID') # - Enter your AWS ACCESS KEY ID HERE
-AWS_SECRET_ACCESS_KEY = os.environ.get('AWS_SECRET_ACCESS_KEY') # - Enter your AWS SECRET ACCESS KEY HERE
-
-
-# Amazon S3 Integration
-
-AWS_STORAGE_BUCKET_NAME = os.environ.get('AWS_STORAGE_BUCKET_NAME') # - Enter your S3 bucket name HERE
-
-# Django 4.2 > Storage configuration for S3
-
-STORAGES = {
+if DEBUG:
+    import mimetypes
+    mimetypes.add_type("application/javascript", ".js", True)
     
-    # Media file (image) management
-
-    "default": {
-        "BACKEND": "storages.backends.s3boto3.S3StaticStorage",
-    },
-    
-    # CSS and JS file management
-
-    "staticfiles": {
-        "BACKEND": "storages.backends.s3boto3.S3StaticStorage",
-        
-    },
-    
-}
-
-
-AWS_S3_CUSTOM_DOMAIN = '%s.s3.amazonaws.com' % AWS_STORAGE_BUCKET_NAME
-
-AWS_S3_FILE_OVERWRITE = False
-
-
-
-
-
-# RDS (Database) configuration settings:
-# DATABASES = {
-
-#     'default': {
-
-#         'ENGINE': 'django.db.backends.postgresql',
-
-#         'NAME': os.environ.get('NAME'), # Enter your Database name HERE
-
-#         'USER': os.environ.get('USER'), # Enter your Database username HERE
-
-#         'PASSWORD': os.environ.get('PASSWORD'), # Enter your Database password HERE
-
-#         'HOST': os.environ.get('HOST'), # Enter your Database host/endpoint HERE
-
-#         'PORT': '5432',
-#     }
-# }
-
+    if not os.environ.get('RAZORPAY_KEY_ID') or not os.environ.get('RAZORPAY_KEY_SECRET'):
+        print("\033[93m" + "⚠️  Using hardcoded Razorpay test credentials. For production, set RAZORPAY_KEY_ID and RAZORPAY_KEY_SECRET environment variables." + "\033[0m")

@@ -97,6 +97,51 @@
 
 </div>
 
+<!-- Reviews Section -->
+<div class="container">
+    <h3>Product Reviews</h3>
+    {% if reviews %}
+        <ul class="list-group mb-4">
+            {% for review in reviews %}
+                <li class="list-group-item">
+                    <strong>{{ review.user.username }}</strong> - 
+                    <span>{% for i in "12345"|slice:":review.rating" %}★{% endfor %}{% for i in "12345"|slice:"review.rating:" %}☆{% endfor %}</span>
+                    <br>
+                    {{ review.review }}
+                    <br>
+                    <small class="text-muted">{{ review.created_at|date:"M d, Y H:i" }}</small>
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>No reviews yet. Be the first to review this product!</p>
+    {% endif %}
+
+    <!-- Review Form -->
+    {% if user.is_authenticated %}
+    <h4>Leave a Review</h4>
+    <form method="post" class="mb-4">
+        {% csrf_token %}
+        <div class="mb-2">
+            <label for="rating">Rating:</label>
+            <select name="rating" id="rating" class="form-select" required>
+                <option value="">Select</option>
+                {% for i in "12345" %}
+                    <option value="{{ i }}">{{ i }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="mb-2">
+            <label for="review">Review:</label>
+            <textarea name="review" id="review" class="form-control" rows="3" required></textarea>
+        </div>
+        <button type="submit" class="btn btn-primary">Submit Review</button>
+    </form>
+    {% else %}
+        <p><a href="/account/login/">Log in</a> to leave a review.</p>
+    {% endif %}
+</div>
+
 
 <script>
 

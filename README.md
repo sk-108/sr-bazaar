@@ -48,6 +48,12 @@ Srbazaar is a full-fledged **e-commerce web application** built using **Django**
 - **Payments**: PayPal
 - **Deployment**: AWS (AWS EC2, RDS, S3, Route 53 )
 
+## 🧪 Test Credentials
+
+
+
+> **Note**: This is a test account. Please change the password after first login if using in production.
+
 ## 🚀 Getting Started
 
 ### Clone the Repo
@@ -55,3 +61,5 @@ Srbazaar is a full-fledged **e-commerce web application** built using **Django**
 ```bash
 git clone https://github.com/your-username/srbazaar.git
 cd srbazaar
+
+```

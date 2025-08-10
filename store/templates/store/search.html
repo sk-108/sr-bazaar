@@ -1,0 +1,58 @@
+{% extends './base.html' %}
+{% load static %}
+
+{% block content %}
+
+<div class="container">
+
+    <br>
+
+    <div class="text-center">
+
+        <h3> <strong> You searched for: {{ searched }} </strong> </h3>
+
+    </div>
+
+    <br>
+
+    <div class="row">
+
+        {% for product in products %}
+
+            <div class="col-md-4 col-lg-3 mb-4">
+
+                <div class="card h-100 shadow-sm">
+
+                    <a href="{{ product.get_absolute_url }}">
+
+                        <img src="{{ product.image.url }}" class="card-img-top" alt="{{ product.title }}">
+
+                    </a>
+
+                    <div class="card-body">
+
+                        <h5 class="card-title">{{ product.title }}</h5>
+
+                        <p class="card-text">${{ product.price }}</p>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        {% empty %}
+
+            <div class="col-12">
+
+                <p class="text-center">No products found for "{{ searched }}".</p>
+
+            </div>
+
+        {% endfor %}
+
+    </div>
+
+</div>
+
+{% endblock %}
