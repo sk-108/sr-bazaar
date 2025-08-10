@@ -4,8 +4,15 @@ import os
 # Security settings
 DEBUG = os.getenv('DEBUG', 'False') == 'True'
 SECRET_KEY = os.getenv('SECRET_KEY')
-ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', '').split(',')
-CSRF_TRUSTED_ORIGINS = [f'https://{host}' for host in ALLOWED_HOSTS if host]
+
+# Allow all hosts for now - in production, you should specify exact domains
+ALLOWED_HOSTS = ['*']
+
+# For security, you should specify your exact domain in production
+# ALLOWED_HOSTS = ['sr-bazaar.onrender.com', 'www.yourdomain.com']
+
+# CSRF settings
+CSRF_TRUSTED_ORIGINS = ['https://*.onrender.com']
 
 # Database - Using SQLite for simplicity
 DATABASES = {
