@@ -28,3 +28,4 @@ tzdata==2022.5
 urllib3==1.26.12
 whitenoise==6.9.0
 setuptools>=65.0.0
+dj-database-url==2.1.0

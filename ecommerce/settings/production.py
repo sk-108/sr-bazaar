@@ -14,12 +14,15 @@ ALLOWED_HOSTS = ['*']
 # CSRF settings
 CSRF_TRUSTED_ORIGINS = ['https://*.onrender.com']
 
-# Database - Using SQLite for simplicity
+# Database - Using PostgreSQL
+import dj_database_url
+
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-    }
+    'default': dj_database_url.config(
+        default=os.getenv('DATABASE_URL'),
+        conn_max_age=600,
+        conn_health_checks=True,
+    )
 }
 
 # Static files (CSS, JavaScript, Images)

@@ -1,3 +1,9 @@
+databases:
+  - name: postgresql
+    databaseName: srbazaar
+    user: srbazaar
+    plan: free
+
 services:
   - type: web
     name: sr-bazaar
@@ -6,7 +12,11 @@ services:
       pip install --upgrade pip && \
       pip install -r requirements.txt && \
       python manage.py collectstatic --noinput
-    startCommand: gunicorn ecommerce.wsgi:application
+    
+    # Run migrations as part of the start command
+    startCommand: >
+      python manage.py migrate --noinput && \
+      gunicorn ecommerce.wsgi:application
     envVars:
       - key: PYTHON_VERSION
         value: 3.9.16
@@ -16,3 +26,5 @@ services:
         generateValue: true
       - key: WEB_CONCURRENCY
         value: 4
+      - key: DISABLE_COLLECTSTATIC
+        value: 1
