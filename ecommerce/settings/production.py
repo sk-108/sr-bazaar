@@ -14,35 +14,35 @@ ALLOWED_HOSTS = ['*']
 # CSRF settings
 CSRF_TRUSTED_ORIGINS = ['https://*.onrender.com']
 
-# Database - Using PostgreSQL
-import dj_database_url
-
-# Get database URL from environment variable
-DATABASE_URL = os.environ.get('DATABASE_URL')
-
-if not DATABASE_URL:
-    raise ValueError("DATABASE_URL environment variable not set")
-
-# Parse database configuration from DATABASE_URL
-# Format: postgresql://username:password@host:port/database
-# Example: postgresql://srbazaar:password@dpg-xxxxx-oregon-postgres.render.com:5432/srbazaar
-
-db_config = dj_database_url.parse(DATABASE_URL, conn_max_age=600, ssl_require=True)
-
-# Explicitly set the engine to PostgreSQL
-db_config['ENGINE'] = 'django.db.backends.postgresql'
-
-# Add connection health checks
-db_config['CONN_HEALTH_CHECKS'] = True
+# Database
+# https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
 DATABASES = {
-    'default': db_config
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': os.environ.get('DB_NAME'),
+        'USER': os.environ.get('DB_USER'),
+        'PASSWORD': os.environ.get('DB_PASSWORD'),
+        'HOST': os.environ.get('DB_HOST'),
+        'PORT': os.environ.get('DB_PORT', '5432'),
+    }
 }
 
-# Log database connection details (for debugging - remove in production)
-print(f"Connecting to database: {db_config['HOST']}")
-print(f"Database name: {db_config['NAME']}")
-print(f"Using user: {db_config['USER']}")
+# Fallback to SQLite if PostgreSQL is not configured
+if not all([os.environ.get('DB_NAME'), os.environ.get('DB_USER'), os.environ.get('DB_PASSWORD'), os.environ.get('DB_HOST')]):
+    print("WARNING: Using SQLite as fallback. Set DB_NAME, DB_USER, DB_PASSWORD, and DB_HOST environment variables for PostgreSQL.")
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        }
+    }
+
+# Print database connection info for debugging
+print(f"Database engine: {DATABASES['default']['ENGINE']}")
+print(f"Database name: {DATABASES['default'].get('NAME')}")
+print(f"Database user: {DATABASES['default'].get('USER')}")
+print(f"Database host: {DATABASES['default'].get('HOST')}")
 
 # Static files (CSS, JavaScript, Images)
 STATIC_URL = '/static/'
