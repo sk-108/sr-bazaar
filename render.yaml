@@ -17,11 +17,17 @@ services:
     startCommand: >
       python manage.py migrate --noinput && \
       gunicorn ecommerce.wsgi:application
+    
+    # Database URL will be automatically injected by Render
     envVars:
       - key: PYTHON_VERSION
         value: 3.9.16
       - key: DJANGO_SETTINGS_MODULE
         value: ecommerce.settings.production
+      - key: DISABLE_COLLECTSTATIC
+        value: 1
+      - key: DEBUG
+        value: 'False'
       - key: SECRET_KEY
         generateValue: true
       - key: WEB_CONCURRENCY

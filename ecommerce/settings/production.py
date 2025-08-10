@@ -17,13 +17,32 @@ CSRF_TRUSTED_ORIGINS = ['https://*.onrender.com']
 # Database - Using PostgreSQL
 import dj_database_url
 
+# Get database URL from environment variable
+DATABASE_URL = os.environ.get('DATABASE_URL')
+
+if not DATABASE_URL:
+    raise ValueError("DATABASE_URL environment variable not set")
+
+# Parse database configuration from DATABASE_URL
+# Format: postgresql://username:password@host:port/database
+# Example: postgresql://srbazaar:password@dpg-xxxxx-oregon-postgres.render.com:5432/srbazaar
+
+db_config = dj_database_url.parse(DATABASE_URL, conn_max_age=600, ssl_require=True)
+
+# Explicitly set the engine to PostgreSQL
+db_config['ENGINE'] = 'django.db.backends.postgresql'
+
+# Add connection health checks
+db_config['CONN_HEALTH_CHECKS'] = True
+
 DATABASES = {
-    'default': dj_database_url.config(
-        default=os.getenv('DATABASE_URL'),
-        conn_max_age=600,
-        conn_health_checks=True,
-    )
+    'default': db_config
 }
+
+# Log database connection details (for debugging - remove in production)
+print(f"Connecting to database: {db_config['HOST']}")
+print(f"Database name: {db_config['NAME']}")
+print(f"Using user: {db_config['USER']}")
 
 # Static files (CSS, JavaScript, Images)
 STATIC_URL = '/static/'
