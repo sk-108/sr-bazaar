@@ -1,6 +1,5 @@
 from .base import *
 import os
-import dj_database_url
 
 # Security settings
 DEBUG = os.getenv('DEBUG', 'False') == 'True'
@@ -8,12 +7,12 @@ SECRET_KEY = os.getenv('SECRET_KEY')
 ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', '').split(',')
 CSRF_TRUSTED_ORIGINS = [f'https://{host}' for host in ALLOWED_HOSTS if host]
 
-# Database
+# Database - Using SQLite for simplicity
 DATABASES = {
-    'default': dj_database_url.config(
-        default=os.getenv('DATABASE_URL'),
-        conn_max_age=600
-    )
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+    }
 }
 
 # Static files (CSS, JavaScript, Images)
